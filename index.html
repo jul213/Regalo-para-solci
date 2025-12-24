@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regalo de Navidad para Solci ✨</title>
+    <style>
+        :root {
+            --gold: #ffcc33;
+            --violet: #7b2cbf;
+            --dark-violet: #240046;
+            --white: #ffffff;
+            --shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: #03071e;
+            color: var(--white);
+            font-family: 'Garamond', serif;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #canvas-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+        /* Mensajes de estrellas */
+        .star-message {
+            position: absolute; color: var(--gold); font-size: clamp(1em, 4vw, 1.4em);
+            font-style: italic; white-space: nowrap; text-shadow: 0 0 15px black;
+            pointer-events: none; z-index: 2; font-weight: bold;
+        }
+
+        /* Decoración */
+        .garland {
+            position: fixed; top: 0; width: 100%; height: 90px;
+            background: url('https://www.transparentpng.com/download/christmas-borders/christmas-border-png-image-15.png') repeat-x;
+            background-size: contain; z-index: 100;
+        }
+
+        .snow-bottom {
+            position: fixed; bottom: -5px; width: 100%; height: 120px;
+            background: url('https://www.transparentpng.com/download/snow/white-snow-drift-transparent-background-5.png') repeat-x;
+            background-size: cover; z-index: 5; pointer-events: none;
+        }
+
+        /* Pantalla de Inicio */
+        #overlay {
+            position: fixed; inset: 0; background: radial-gradient(circle, var(--violet), var(--dark-violet));
+            display: flex; justify-content: center; align-items: center; z-index: 1000; transition: 1.5s;
+        }
+
+        .envelope {
+            padding: 40px; background: rgba(255,255,255,0.1); border: 2px solid var(--gold);
+            border-radius: 30px; cursor: pointer; text-align: center;
+            backdrop-filter: blur(10px); box-shadow: 0 0 50px var(--violet); max-width: 90%;
+        }
+
+        /* Contenedor Principal */
+        .container {
+            position: relative; z-index: 10; width: 100%; max-width: 1100px;
+            padding: 120px 20px; text-align: center; opacity: 0; transform: scale(0.9); transition: 2s;
+        }
+
+        h1 { 
+            font-size: clamp(2.2em, 8vw, 4em); color: var(--gold); 
+            text-shadow: 0 0 30px rgba(255,204,51,0.5); margin: 0; 
+        }
+
+        /* Regalos */
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 25px; margin-top: 50px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 25px; padding: 25px; cursor: pointer; transition: 0.5s;
+        }
+
+        .card:hover { transform: translateY(-10px); border-color: var(--gold); background: rgba(123, 44, 191, 0.2); }
+
+        .label { font-weight: bold; color: var(--gold); display: block; margin-bottom: 15px; font-size: 0.8em; letter-spacing: 2px; }
+
+        .box {
+            font-size: 3em; background: var(--violet); width: 80px; height: 80px;
+            margin: 0 auto; border-radius: 20px; display: flex; align-items: center;
+            justify-content: center; border: 2px solid var(--gold); position: relative;
+        }
+
+        /* Modal / Ventana de regalo */
+        .modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+        }
+
+        .modal-inner {
+            background: white; color: #1a0033; max-width: 500px; width: 100%;
+            border-radius: 35px; padding: 25px; text-align: center; border: 6px double var(--violet);
+            box-shadow: 0 0 40px var(--violet); animation: pop 0.4s ease-out;
+            max-height: 90vh; overflow-y: auto;
+        }
+
+        @keyframes pop { from { scale: 0.8; opacity: 0; } }
+
+        /* AQUÍ ESTÁ EL ARREGLO DE LAS IMÁGENES */
+        .modal-inner img { 
+            width: 100%; 
+            height: 250px; /* Altura fija para que no se rompa */
+            object-fit: cover; /* Corta la imagen para que rellene el espacio sin deformarse */
+            border-radius: 20px; 
+            margin-bottom: 15px; 
+            border: 3px solid var(--violet); 
+        }
+
+        .close-btn {
+            background: var(--violet); color: white; border: none; padding: 12px 30px;
+            border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 10px;
+        }
+
+        .final-btn {
+            margin-top: 60px; padding: 15px 40px; background: transparent;
+            border: 2px solid var(--gold); color: var(--gold); border-radius: 50px;
+            font-size: 1.1em; cursor: pointer; transition: 0.5s;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay">
+        <div class="envelope" onclick="openWeb()">
+            <h1 style="font-size: 1.8em; margin-bottom: 10px;">Para Solci 💜</h1>
+            <p>Un detalle de tu conversador favorito :D</p>
+            <span style="color: var(--gold)">Toca para abrir la sorpresa</span>
+        </div>
+    </div>
+
+    <div class="garland"></div>
+    <canvas id="canvas-bg"></canvas>
+    <div class="snow-bottom"></div>
+
+    <div class="container" id="main">
+        <h1>FELIZ NAVIDAD SOLCI</h1>
+        <p style="font-size: 1.2em; opacity: 0.8;">Lo que te representa, tu esencia ✨</p>
+
+        <div class="grid">
+            <div class="card" onclick="openGift('italia')"><span class="label">TU DESTINO</span><div class="box">🇮🇹</div></div>
+            <div class="card" onclick="openGift('profe')"><span class="label">TU VOCACIÓN</span><div class="box">👩‍🏫</div></div>
+            <div class="card" onclick="openGift('voley')"><span class="label">TU DEPORTE</span><div class="box">🏐</div></div>
+            <div class="card" onclick="openGift('dibujo')"><span class="label">TUS DIBUJOS</span><div class="box">🎨</div></div>
+            <div class="card" onclick="openGift('girasol')"><span class="label">TU ESENCIA</span><div class="box">🌻</div></div>
+            <div class="card" onclick="openGift('telas')"><span class="label">TU HOBBIE</span><div class="box">🤸</div></div>
+            <div class="card" onclick="openGift('psico')"><span class="label">TU DON</span><div class="box">🧠</div></div>
+            <div class="card" onclick="openGift('mascotas')"><span class="label">TU AMOR</span><div class="box">🐾</div></div>
+        </div>
+
+        <button class="final-btn" onclick="openGift('final')">Leer carta final para ti 💌</button>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-inner">
+            <h2 id="m-title" style="color: var(--violet); margin-top:0; font-size: 1.8em;"></h2>
+            <img id="m-img" src="" alt="Cargando momento mágico...">
+            <p id="m-desc" style="font-size: 1.1em; line-height: 1.5;"></p>
+            <button class="close-btn" onclick="closeM()">Cerrar con sueño 😴</button>
+        </div>
+    </div>
+
+    <script>
+        const giftData = {
+            'italia': { title: 'Tu Sueño en Italia', img: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.fodors.com%2Fwp-content%2Fuploads%2F2018%2F10%2FHERO_UltimateRome_Hero_shutterstock789412159.jpg&f=1&nofb=1', desc: 'Que pronto las fotos sean reales en el Coliseo. ¡Te lo mereces por todo lo que te esfuerzás! No se te olvide invitarmeeee jsjsjs.' },
+            'profe': { title: 'Tu Camino como Profe', img: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.pixabay.com%2Fphoto%2F2024%2F04%2F16%2F16%2F03%2Fwoman-8700275_1280.png&f=1&nofb=1', desc: 'Tu paciencia y dedicación te van a hacer una profesora increíble. Como ya lo eres para mí :D.' },
+            'voley': { title: 'Energía en la Cancha', img: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmejorconsalud.as.com%2Ffitness%2Fwp-content%2Fuploads%2F2020%2F11%2Fpelota-voley-playa.jpg&f=1&nofb=1', desc: 'Sigue saltando alto Solci, en el voley y en cada meta que te propongas. ¡En la playa siempre!' },
+            'dibujo': { title: 'Arte en tus Manos', img: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F4a%2F51%2F8b%2F4a518b92ae378b84a5579a283ed0da85.jpg&f=1&nofb=1', desc: 'Cada trazo tuyo es muy bonito. Nunca dejes de expresar tu arte. Dibujas muy bien, créeme, un 10/10.' },
+            'girasol': { title: 'Tu Luz de Girasol', img: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimg.freepik.com%2Fvector-premium%2Fdibujos-animados-planta-girasol-aislado_1639-49793.jpg%3Fw%3D2000&f=1&nofb=1', desc: 'Eres una persona especial, como el girasol, muy alegre siempre buscando lo mejor del día.' },
+            'telas': { title: 'Libre al Volar', img: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Feb%2Fb9%2F86%2Febb9866332c41ac2b26cccc5030acd0f.jpg&f=1&nofb=1', desc: 'Tu pasión por la acrobacia en tela es el reflejo exacto de tu fuerza interior. ¡Es impresionante!' },
+            'psico': { title: 'Futura Psicóloga', img: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.postposmo.com%2Fwp-content%2Fuploads%2F2021%2F02%2Fpsicologia-educativa_opt-hermiferios900x600.jpg&f=1&nofb=1', desc: 'Tu empatía va a ayudar a muchísimas personas. Tenés un don natural para escuchar.' },
+            'mascotas': { title: 'Amor Incondicional', img: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fbe%2Ffe%2F3d%2Fbefe3d6afd4f82019769063e93346167.webp&f=1&nofb=1', desc: 'Tu amor por los animales demuestra la nobleza de tu corazón. ¡Saludos a Muñeca! 🐶' },
+            'final': { title: '¡Feliz Navidad, Solci!', img: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.chiquipedia.com%2Fimagenes%2Fimagenes-navidad16.jpg&f=1&nofb=1', desc: 'Espero que este detalle te saque una sonrisa. eres increíble y te mereces lo mejor siempre. ¡A disfrutar! espero que te haya gustado mi regalo, nada tu sabes que pues quiero que te vaya muy bien en todo. se que lograras todos tus sueños y todo lo que me has contado, gracias por tenerme tanta confianza jsjsjs' }
+        };
+
+        const starMessages = ["Solci, eres muy especial ✨", "Tu sonrisa ilumina todo", "Feliz Navidad, solci", "Sos una persona increíble 💜", "Tu energía es contagiosa", "Sigue brillando siempre", "Eres un poquito dormilona 😴", "Gracias por aguantarme jjsjs", "Mates y buena charla 🧉", "Eres una gran cocinera", "a veces me asustas", "julio estuvo aqui", "mensaje secreto", "holaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "sigue brillando como tu outfit de hoy", "este mensaje solo puedes leerlo una vez", "me gusta saludarte ya sabes, asi que hola otra vezzzz"];
+
+        function openWeb() {
+            document.getElementById('overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('main').style.opacity = '1';
+                document.getElementById('main').style.transform = 'scale(1)';
+                setInterval(createShootingStar, 5000);
+            }, 1000);
+        }
+
+        function openGift(id) {
+            const d = giftData[id];
+            document.getElementById('m-title').innerText = d.title;
+            document.getElementById('m-img').src = d.img;
+            document.getElementById('m-desc').innerText = d.desc;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeM() { document.getElementById('modal').style.display = 'none'; }
+
+        // NIEVE
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let w, h, flakes = [];
+
+        function init() {
+            w = window.innerWidth; h = window.innerHeight;
+            canvas.width = w; canvas.height = h;
+            flakes = [];
+            for(let i=0; i<100; i++) flakes.push({x: Math.random()*w, y: Math.random()*h, r: Math.random()*2+1, d: Math.random()*0.5+0.5});
+        }
+
+        function draw() {
+            ctx.clearRect(0,0,w,h);
+            ctx.fillStyle = "rgba(255,255,255,0.7)"; ctx.beginPath();
+            for(let f of flakes) {
+                ctx.moveTo(f.x, f.y); ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+                f.y += f.d; if(f.y > h) f.y = -5;
+            }
+            ctx.fill();
+            requestAnimationFrame(draw);
+        }
+
+        function createShootingStar() {
+            const msg = document.createElement('div');
+            msg.className = 'star-message';
+            msg.innerText = starMessages[Math.floor(Math.random()*starMessages.length)];
+            const startX = Math.random() * (w - 200);
+            const startY = Math.random() * (h / 3) + 100;
+            msg.style.left = startX + 'px';
+            msg.style.top = startY + 'px';
+            document.body.appendChild(msg);
+            msg.animate([{ opacity: 0, transform: 'translateY(20px)' }, { opacity: 1, offset: 0.1 }, { opacity: 1, offset: 0.9 }, { opacity: 0, transform: 'translateY(-30px)' }], { duration: 7000 });
+            setTimeout(() => { msg.remove(); }, 7000);
+        }
+
+        window.onresize = init; init(); draw();
+    </script>
+</body>
+</html>
